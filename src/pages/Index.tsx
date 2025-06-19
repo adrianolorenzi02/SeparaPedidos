@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,8 +28,8 @@ const Index = () => {
       id: "PED-001",
       customer: "João Silva",
       items: 5,
-      status: "pending",
-      priority: "high",
+      status: "pending" as const,
+      priority: "high" as const,
       time: "10:30",
       date: "Hoje"
     },
@@ -38,8 +37,8 @@ const Index = () => {
       id: "PED-002", 
       customer: "Maria Santos",
       items: 3,
-      status: "in_progress",
-      priority: "medium",
+      status: "in_progress" as const,
+      priority: "medium" as const,
       time: "11:15",
       date: "Hoje"
     },
@@ -47,8 +46,8 @@ const Index = () => {
       id: "PED-003",
       customer: "Carlos Oliveira",
       items: 8,
-      status: "completed",
-      priority: "low",
+      status: "completed" as const,
+      priority: "low" as const,
       time: "09:45",
       date: "Hoje"
     }

@@ -10,6 +10,7 @@ import {
   ChevronRight,
   User
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Order {
   id: string;
@@ -26,6 +27,8 @@ interface OrderCardProps {
 }
 
 export const OrderCard = ({ order }: OrderCardProps) => {
+  const navigate = useNavigate();
+
   const getStatusConfig = (status: string) => {
     switch (status) {
       case "pending":
@@ -68,11 +71,18 @@ export const OrderCard = ({ order }: OrderCardProps) => {
     }
   };
 
+  const handleCardClick = () => {
+    navigate("/product-separation");
+  };
+
   const statusConfig = getStatusConfig(order.status);
   const StatusIcon = statusConfig.icon;
 
   return (
-    <Card className={`border-l-4 ${getPriorityColor(order.priority)} hover:shadow-md transition-shadow cursor-pointer`}>
+    <Card 
+      className={`border-l-4 ${getPriorityColor(order.priority)} hover:shadow-md transition-shadow cursor-pointer`}
+      onClick={handleCardClick}
+    >
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">

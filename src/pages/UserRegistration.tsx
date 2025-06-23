@@ -3,45 +3,71 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { 
   ArrowLeft, 
-  User, 
-  Save,
+  Users, 
+  Search,
   UserPlus
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import UserList from "@/components/users/UserList";
+import UserForm from "@/components/forms/UserForm";
 
 const UserRegistration = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: "",
-    password: "",
-    profile: "",
-    active: true
-  });
+  const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Dados mockados para os perfis disponíveis
-  const profiles = [
-    { id: "admin", name: "Administrador" },
-    { id: "operator", name: "Operador" },
-    { id: "supervisor", name: "Supervisor" },
-    { id: "viewer", name: "Visualizador" }
-  ];
+  // Dados mockados dos usuários
+  const [users, setUsers] = useState([
+    {
+      id: "1",
+      name: "João Silva",
+      profile: "admin",
+      active: true
+    },
+    {
+      id: "2", 
+      name: "Maria Santos",
+      profile: "operator",
+      active: true
+    },
+    {
+      id: "3",
+      name: "Pedro Costa",
+      profile: "supervisor",
+      active: false
+    },
+    {
+      id: "4",
+      name: "Ana Oliveira",
+      profile: "viewer",
+      active: true
+    }
+  ]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Dados do usuário:", formData);
-    // Aqui seria implementada a lógica de cadastro
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleAddUser = (userData: any) => {
+    const newUser = {
+      id: Date.now().toString(),
+      ...userData
+    };
+    setUsers(prev => [...prev, newUser]);
+    setShowForm(false);
+    console.log("Novo usuário criado:", newUser);
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const handleEditUser = (user: any) => {
+    console.log("Editar usuário:", user);
+    // Aqui seria implementada a lógica de edição
+  };
+
+  const handleDeleteUser = (userId: string) => {
+    setUsers(prev => prev.filter(user => user.id !== userId));
+    console.log("Usuário removido:", userId);
   };
 
   return (
@@ -59,151 +85,72 @@ const UserRegistration = () => {
               <ArrowLeft className="w-5 h-5 text-gray-600" />
             </Button>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Cadastro de Usuário</h1>
-              <p className="text-sm text-gray-500">Criar novo usuário do sistema</p>
+              <h1 className="text-xl font-bold text-gray-900">Usuários</h1>
+              <p className="text-sm text-gray-500">Gerenciar usuários do sistema</p>
             </div>
           </div>
           
           <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-            <UserPlus className="w-5 h-5 text-blue-600" />
+            <Users className="w-5 h-5 text-blue-600" />
           </div>
         </div>
       </header>
 
       <div className="px-4 py-6">
-        {/* Form Card */}
-        <Card className="border-0 shadow-sm">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-600" />
-              Informações do Usuário
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Nome */}
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm font-medium text-gray-700">
-                  Nome
-                </Label>
+        {showForm ? (
+          <UserForm 
+            onCancel={() => setShowForm(false)}
+            onSubmit={handleAddUser}
+          />
+        ) : (
+          <>
+            {/* Search and Add Button */}
+            <div className="flex gap-3 mb-6">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  id="name"
-                  type="text"
-                  placeholder="Digite o nome completo"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  className="h-12 bg-white border-gray-200"
-                  required
+                  placeholder="Buscar usuários..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-12 bg-white border-gray-200"
                 />
               </div>
+              <Button
+                onClick={() => setShowForm(true)}
+                className="h-12 bg-blue-600 hover:bg-blue-700 text-white px-4"
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                Novo Usuário
+              </Button>
+            </div>
 
-              {/* Senha */}
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-                  Senha
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Digite a senha"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
-                  className="h-12 bg-white border-gray-200"
-                  required
-                />
-              </div>
-
-              {/* Perfil */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700">
-                  Perfil
-                </Label>
-                <Select 
-                  value={formData.profile} 
-                  onValueChange={(value) => handleInputChange("profile", value)}
-                >
-                  <SelectTrigger className="h-12 bg-white border-gray-200">
-                    <SelectValue placeholder="Selecione um perfil" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200 shadow-lg">
-                    {profiles.map((profile) => (
-                      <SelectItem key={profile.id} value={profile.id}>
-                        {profile.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Ativo */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700">
-                  Status
-                </Label>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Usuário Ativo</p>
-                    <p className="text-xs text-gray-500">
-                      {formData.active ? "O usuário poderá acessar o sistema" : "O usuário não poderá acessar o sistema"}
+            {/* Users List */}
+            <Card className="border-0 shadow-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-blue-600" />
+                  Usuários Cadastrados ({filteredUsers.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {filteredUsers.length > 0 ? (
+                  <UserList 
+                    users={filteredUsers}
+                    onEditUser={handleEditUser}
+                    onDeleteUser={handleDeleteUser}
+                  />
+                ) : (
+                  <div className="text-center py-8">
+                    <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500">
+                      {searchTerm ? "Nenhum usuário encontrado" : "Nenhum usuário cadastrado"}
                     </p>
                   </div>
-                  <Switch
-                    checked={formData.active}
-                    onCheckedChange={(checked) => handleInputChange("active", checked)}
-                  />
-                </div>
-              </div>
-
-              {/* Botões de Ação */}
-              <div className="flex gap-3 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate("/")}
-                  className="flex-1 h-12 border-gray-200 text-gray-600 hover:bg-gray-50"
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1 h-12 bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Salvar Usuário
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Preview Card */}
-        <Card className="border-0 shadow-sm mt-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold text-gray-900">
-              Preview dos Dados
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between py-2 border-b border-gray-100">
-                <span className="text-sm font-medium text-gray-600">Nome:</span>
-                <span className="text-sm text-gray-900">{formData.name || "Não informado"}</span>
-              </div>
-              <div className="flex justify-between py-2 border-b border-gray-100">
-                <span className="text-sm font-medium text-gray-600">Perfil:</span>
-                <span className="text-sm text-gray-900">
-                  {profiles.find(p => p.id === formData.profile)?.name || "Não selecionado"}
-                </span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span className="text-sm font-medium text-gray-600">Status:</span>
-                <span className={`text-sm font-medium ${formData.active ? 'text-green-600' : 'text-red-600'}`}>
-                  {formData.active ? "Ativo" : "Inativo"}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

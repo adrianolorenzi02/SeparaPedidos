@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,6 @@ import {
   Plus,
   Filter
 } from "lucide-react";
-import { MobileHeader } from "@/components/mobile/MobileHeader";
 import { OrderCard } from "@/components/mobile/OrderCard";
 import { StatsGrid } from "@/components/mobile/StatsGrid";
 
@@ -69,8 +69,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MobileHeader />
-      
       {/* Stats Section */}
       <div className="px-4 py-6">
         <StatsGrid stats={stats} />

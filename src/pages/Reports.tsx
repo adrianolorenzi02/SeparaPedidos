@@ -87,8 +87,8 @@ const Reports = () => {
   const filteredData = reportData.filter(item => {
     const matchDataInicial = !filters.dataInicial || item.data >= filters.dataInicial;
     const matchDataFinal = !filters.dataFinal || item.data <= filters.dataFinal;
-    const matchSeparador = !filters.separador || item.separador === filters.separador;
-    const matchSituacao = !filters.situacao || item.situacao === filters.situacao;
+    const matchSeparador = !filters.separador || filters.separador === 'todos' || item.separador === filters.separador;
+    const matchSituacao = !filters.situacao || filters.situacao === 'todas' || item.situacao === filters.situacao;
     
     return matchDataInicial && matchDataFinal && matchSeparador && matchSituacao;
   });
@@ -176,7 +176,7 @@ const Reports = () => {
                     <SelectValue placeholder="Todos os separadores" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Todos os separadores</SelectItem>
+                    <SelectItem value="todos">Todos os separadores</SelectItem>
                     {separadores.map(separador => (
                       <SelectItem key={separador} value={separador}>{separador}</SelectItem>
                     ))}
@@ -191,7 +191,7 @@ const Reports = () => {
                     <SelectValue placeholder="Todas as situações" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Todas as situações</SelectItem>
+                    <SelectItem value="todas">Todas as situações</SelectItem>
                     <SelectItem value="Completo">Completo</SelectItem>
                     <SelectItem value="Parcial">Parcial</SelectItem>
                   </SelectContent>
